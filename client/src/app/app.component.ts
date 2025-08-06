@@ -18,10 +18,10 @@ export class AppComponent implements OnInit {
   products: Product[] = [];
 
   ngOnInit(): void {
-    this.http.get<Pagination<Product>>(this.baseUrl + 'products').subscribe({
+    this.http.get<any>(this.baseUrl + 'products').subscribe({
       next: response => {
         console.log(response),
-        this.products = response.data
+        this.products = response
       },
       error: error => console.log(error),
       complete: () => console.log('complete')
