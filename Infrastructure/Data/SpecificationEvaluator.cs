@@ -21,6 +21,7 @@ public class SpecificationEvaluator<T> where T : BaseEntity
         if (spec.OrderByDescending != null)
         {
             query = query.OrderByDescending(spec.OrderByDescending);
+            
         }
         
         return query;
