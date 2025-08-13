@@ -34,7 +34,7 @@ export class ShopComponent implements OnInit {
     this.shopService.getProducts().subscribe({
       next: response => {
         console.log(response),
-        this.products = response
+        this.products = response.data
       },
       error: error => console.log(error)
     })
@@ -56,7 +56,7 @@ export class ShopComponent implements OnInit {
           this.shopService.getProducts(this.selectedBrands, this.selectedTypes).subscribe({
             next: response => {
               console.log(response),
-              this.products = response
+              this.products = response.data
             },
             error: error => console.log(error)
           })
