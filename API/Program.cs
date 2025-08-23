@@ -26,7 +26,21 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddCors();
+
+//builder.Services.AddCors();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("https://localhost:4200") // must match exactly
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // this is key
+    });
+});
+
+
 builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
 {
     /*var connString = builder.Configuration.GetConnectionString("Redis")
@@ -56,8 +70,10 @@ app.UseMiddleware<ExceptionMiddleware>();
     .AllowAnyHeader()
 );*/
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
-    .WithOrigins("http://localhost:4200", "https://localhost:4200"));
+/*app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
+    .WithOrigins("http://localhost:4200", "https://localhost:4200")); */
+
+app.UseCors("AllowFrontend");
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();
