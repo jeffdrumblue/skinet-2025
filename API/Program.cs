@@ -27,9 +27,9 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
-//builder.Services.AddCors();
+builder.Services.AddCors();
 
-builder.Services.AddCors(options =>
+/*builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
@@ -38,7 +38,7 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowCredentials(); // this is key
     });
-});
+});*/
 
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
@@ -54,26 +54,28 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
     //This will connect to a single server on the local machine using the default redis port (6379).
     return ConnectionMultiplexer.Connect("localhost");
 });
+
 builder.Services.AddSingleton<ICartService, CartService>();
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddEntityFrameworkStores<StoreContext>();
 
+//Note: To add CORS middleware, you should add UseCors before UseMiddleware
+
 var app = builder.Build();
+app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
 
-/*app.UseCors(builder =>
-    builder.AllowAnyOrigin()
-    .AllowAnyMethod()
+app.UseCors(x => x
     .AllowAnyHeader()
-);*/
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .WithOrigins("http://localhost:4200", "https://localhost:4200"));
 
-/*app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
-    .WithOrigins("http://localhost:4200", "https://localhost:4200")); */
-
-app.UseCors("AllowFrontend");
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();

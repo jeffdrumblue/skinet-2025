@@ -1,7 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Address, User } from '../../shared/models/user';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +23,18 @@ export class AccountService {
   }
 
   getUserInfo() {
-    return this.http.get<User>(this.baseUrl + 'account/user-info', {withCredentials:true}).subscribe({
-      next: user => this.currentUser.set(user)
-    })
+    return this.http.get<User>(this.baseUrl + 'account/user-info', { withCredentials: true }).pipe(
+      map(user => {
+        console.log("user is ", user);
+        this.currentUser.set(user);
+        return user;
+      }),
+      catchError((error) => {
+        // Handle the error
+        console.log("Error occurred: ", error);
+        return throwError(() => new Error('Failed to fetch data.'));
+      })
+    );
   }
 
   logout() {
