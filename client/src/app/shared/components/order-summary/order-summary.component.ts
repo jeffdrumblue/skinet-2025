@@ -8,7 +8,7 @@ import { CurrencyPipe } from '@angular/common';
 
 
 @Component({
-  selector: 'app-order-summay',
+  selector: 'app-order-summary',
   imports: [
     MatButton,
     RouterLink,
@@ -17,9 +17,9 @@ import { CurrencyPipe } from '@angular/common';
     MatInput,
     CurrencyPipe
 ],
-  templateUrl: './order-summay.component.html',
-  styleUrl: './order-summay.component.scss'
+  templateUrl: './order-summary.component.html',
+  styleUrl: './order-summary.component.scss'
 })
-export class OrderSummayComponent {
+export class OrderSummaryComponent {
   cartService = inject(CartService);
 }
