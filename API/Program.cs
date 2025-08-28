@@ -59,21 +59,20 @@ builder.Services.AddSingleton<ICartService, CartService>();
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddEntityFrameworkStores<StoreContext>();
-
-//Note: To add CORS middleware, you should add UseCors before UseMiddleware
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 var app = builder.Build();
-app.UseCors("AllowFrontend");
+//app.UseCors("AllowFrontend");
 
-// Configure the HTTP request pipeline.
-app.UseMiddleware<ExceptionMiddleware>();
-
+// Note: You should add UseCors before UseMiddleware
 app.UseCors(x => x
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials()
     .WithOrigins("http://localhost:4200", "https://localhost:4200"));
 
+// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
