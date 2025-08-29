@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-public class PaymentController(IPaymentService paymentService,
+public class PaymentsController(IPaymentService paymentService,
     IGenericRepository<DeliveryMethod> dmRepo) : BaseApiController
 {
     [Authorize]
